@@ -25,16 +25,17 @@
       <a href="#early-life">Early Life</a>
       <a href="#revolutionary-war">Revolutionary War</a>
       <a href="#president">First President</a>
+      <a href="#stats">By the Numbers</a>
       <a href="#gallery">Gallery</a>
       <a href="#fun-facts">Fun Facts</a>
-      <a href="#achievements">Achievements</a>
+      <a href="#quotes">Quotes</a>
       <a href="#timeline">Timeline</a>
       <a href="#quiz">Quiz</a>
     </nav>
   </header>
 
   <!-- SCROLLING TICKER -->
-  <div class="ticker-wrap">
+  <div class="ticker-wrap" title="Hover to pause">
     <div class="ticker">
       <span>⭐ Did you know? Washington was the only president ever to be unanimously elected — twice!</span>
       <span>⭐ He never lived in the White House — it was not finished during his presidency.</span>
@@ -44,6 +45,8 @@
       <span>⭐ He loved dogs and had one named "Sweet Lips"!</span>
       <span>⭐ His face is on the $1 bill and the quarter coin.</span>
       <span>⭐ He is one of four presidents carved on Mount Rushmore.</span>
+      <span>⭐ Washington was a skilled horseback rider and owned many horses.</span>
+      <span>⭐ He became a land surveyor at just 17 years old!</span>
     </div>
   </div>
 
@@ -62,8 +65,10 @@
     <h2>Early Life</h2>
     <div class="section-with-image">
       <div class="section-image-wrap">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mount_Vernon_Oct_2011.jpg?width=400"
-             alt="Mount Vernon, George Washington's home" />
+        <img data-wiki="Mount_Vernon"
+             src=""
+             alt="Mount Vernon, George Washington's home"
+             class="wiki-img" />
         <p class="img-caption">Mount Vernon — Washington's beloved home in Virginia</p>
       </div>
       <div class="card-grid">
@@ -151,44 +156,82 @@
     </div>
   </section>
 
+  <!-- BY THE NUMBERS -->
+  <section id="stats" class="section section-stats">
+    <div class="section-icon">🔢</div>
+    <h2>By the Numbers</h2>
+    <p class="section-intro">George Washington's life in amazing facts and figures!</p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" data-target="8">0</div>
+        <div class="stat-label">Years as Commander-in-Chief</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="2">0</div>
+        <div class="stat-label">Terms as President</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="67">0</div>
+        <div class="stat-label">Years He Lived</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="13">0</div>
+        <div class="stat-label">Original Colonies He Led</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="1">0</div>
+        <div class="stat-label">Nation He Helped Create</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" data-target="1789">0</div>
+        <div class="stat-label">Year of First Inauguration</div>
+      </div>
+    </div>
+  </section>
+
   <!-- GALLERY -->
   <section id="gallery" class="section section-gallery">
     <div class="section-icon">🖼️</div>
     <h2>Photo Gallery</h2>
-    <p class="section-intro">Explore key places and moments from Washington's life.</p>
+    <p class="section-intro">Click any image to see it up close! Explore key places and moments from Washington's life.</p>
     <div class="gallery-grid">
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg?width=300"
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg?width=400"
              alt="Famous portrait of George Washington" />
         <div class="gallery-caption">The Lansdowne Portrait — one of the most famous paintings of Washington (1796)</div>
       </div>
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mount_Vernon_Oct_2011.jpg?width=300"
-             alt="Mount Vernon estate" />
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img data-wiki="Mount_Vernon" src="" alt="Mount Vernon estate" class="wiki-img" />
         <div class="gallery-caption">Mount Vernon — Washington's beautiful home in Virginia</div>
       </div>
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Washington_Crossing_the_Delaware_by_Emanuel_Leutze,_MMA-NYC,_1851.jpg?width=300"
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Washington_Crossing_the_Delaware_by_Emanuel_Leutze,_MMA-NYC,_1851.jpg?width=400"
              alt="Crossing the Delaware" />
         <div class="gallery-caption">Washington Crossing the Delaware — famous painting by Emanuel Leutze, 1851</div>
       </div>
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/George_Washington_at_Valley_Forge.jpg?width=300"
-             alt="George Washington at Valley Forge" />
-        <div class="gallery-caption">George Washington at Valley Forge — leading his troops through the brutal winter of 1777</div>
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img data-wiki="Valley_Forge" src="" alt="Valley Forge" class="wiki-img" />
+        <div class="gallery-caption">Valley Forge — where Washington kept his army together through a brutal winter</div>
       </div>
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Washington_Monument_2013.jpg?width=300"
-             alt="Washington Monument" />
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img data-wiki="Washington_Monument" src="" alt="Washington Monument" class="wiki-img" />
         <div class="gallery-caption">The Washington Monument in Washington D.C. — 555 feet tall!</div>
       </div>
-      <div class="gallery-item">
-        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mount_Rushmore_2009.jpg?width=300"
-             alt="Mount Rushmore" />
+      <div class="gallery-item" onclick="openLightbox(this)">
+        <img data-wiki="Mount_Rushmore" src="" alt="Mount Rushmore" class="wiki-img" />
         <div class="gallery-caption">Mount Rushmore — Washington is the first face on the left</div>
       </div>
     </div>
   </section>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox()">&#10005;</button>
+      <img id="lightbox-img" src="" alt="" />
+      <p id="lightbox-caption"></p>
+    </div>
+  </div>
 
   <!-- FUN FACTS -->
   <section id="fun-facts" class="section section-fun">
@@ -227,6 +270,21 @@
         <span class="fact-num">8</span>
         <p>The U.S. capital city, <strong>Washington D.C.</strong>, was named in his honor.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- QUOTES -->
+  <section id="quotes" class="section section-quotes">
+    <div class="section-icon">💬</div>
+    <h2>Words of Wisdom</h2>
+    <p class="section-intro">George Washington was known for his powerful words. Click the arrows to explore his quotes!</p>
+    <div class="quote-carousel">
+      <button class="quote-arrow left" onclick="changeQuote(-1)">&#8592;</button>
+      <div class="quote-display">
+        <div class="quote-text" id="quote-text"></div>
+        <div class="quote-dots" id="quote-dots"></div>
+      </div>
+      <button class="quote-arrow right" onclick="changeQuote(1)">&#8594;</button>
     </div>
   </section>
 
@@ -278,83 +336,98 @@
   <section id="timeline" class="section section-light">
     <div class="section-icon">📅</div>
     <h2>Timeline of His Life</h2>
+    <p class="section-intro">Click any event to learn more!</p>
     <div class="timeline">
-      <div class="timeline-item left">
+
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1732</span>
           <p>Born in Westmoreland County, Virginia</p>
+          <div class="timeline-extra">George was the third child of Augustine Washington and Mary Ball Washington. He grew up on a farm by the Potomac River.</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1749</span>
           <p>Becomes a professional land surveyor at age 17</p>
+          <div class="timeline-extra">Washington used his love of math and maps to survey land in Virginia's Shenandoah Valley, earning good money for a teenager!</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1754</span>
           <p>Fights in the French and Indian War</p>
+          <div class="timeline-extra">Washington commanded Virginia troops against French forces in the wilderness. He survived two horses being shot from under him!</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1759</span>
           <p>Marries Martha Dandridge Custis</p>
+          <div class="timeline-extra">Martha was a wealthy widow with two children. George and Martha were devoted partners for the rest of his life.</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1775</span>
           <p>Named Commander-in-Chief of the Continental Army</p>
+          <div class="timeline-extra">The Continental Congress unanimously chose Washington to lead America's new army. He accepted the role without pay!</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1776</span>
           <p>Crosses the Delaware River on Christmas night</p>
+          <div class="timeline-extra">In a daring surprise attack, Washington crossed the icy Delaware at night and defeated Hessian soldiers at Trenton — boosting American morale.</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1777–78</span>
           <p>Endures brutal winter at Valley Forge</p>
+          <div class="timeline-extra">Over 2,000 soldiers died from cold and disease. Washington stayed with his men and kept the army together through sheer will.</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1781</span>
           <p>Wins the Battle of Yorktown — the war is over!</p>
+          <div class="timeline-extra">Washington trapped British General Cornwallis at Yorktown, Virginia. After a siege, Cornwallis surrendered — ending the Revolutionary War.</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1787</span>
           <p>Presides over the Constitutional Convention</p>
+          <div class="timeline-extra">Washington helped guide 55 delegates to create the U.S. Constitution — the supreme law of the land that still guides America today.</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1789</span>
           <p>Inaugurated as the 1st President of the United States</p>
+          <div class="timeline-extra">On April 30, 1789, Washington was sworn in at Federal Hall in New York City. Every single electoral vote went to him!</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1793</span>
           <p>Begins his second term as President</p>
+          <div class="timeline-extra">Once again, every single electoral vote went to Washington. No other president has ever matched this record.</div>
         </div>
       </div>
-      <div class="timeline-item right">
+      <div class="timeline-item right" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1797</span>
           <p>Retires to Mount Vernon after his Farewell Address</p>
+          <div class="timeline-extra">Washington's Farewell Address warned against political divisions and foreign entanglements. It is still read aloud in the U.S. Senate every year.</div>
         </div>
       </div>
-      <div class="timeline-item left">
+      <div class="timeline-item left" onclick="toggleTimeline(this)">
         <div class="timeline-content">
           <span class="year">1799</span>
           <p>Passes away at Mount Vernon, age 67</p>
+          <div class="timeline-extra">Washington died on December 14, 1799, at his beloved home. People across America and even in Europe mourned his passing.</div>
         </div>
       </div>
     </div>
@@ -364,65 +437,42 @@
   <section id="quiz" class="section section-quiz">
     <div class="section-icon">🧠</div>
     <h2>Test Your Knowledge!</h2>
-    <p class="section-intro">Think you know George Washington? Take this quick quiz to find out!</p>
+    <p class="section-intro">5 questions are chosen randomly each time — see if you can get a perfect score!</p>
     <div id="quiz-container">
       <div class="quiz-question active" id="q1">
-        <p class="q-text">1. When was George Washington born?</p>
-        <div class="q-options">
-          <button onclick="answer(this, false)">January 1, 1730</button>
-          <button onclick="answer(this, true)">February 22, 1732</button>
-          <button onclick="answer(this, false)">July 4, 1776</button>
-          <button onclick="answer(this, false)">March 15, 1745</button>
-        </div>
-        <p class="q-feedback"></p>
+        <p class="q-text" id="q1-text"></p>
+        <div class="q-options" id="q1-options"></div>
+        <p class="q-feedback" id="q1-feedback"></p>
       </div>
       <div class="quiz-question" id="q2">
-        <p class="q-text">2. What was the name of Washington's home?</p>
-        <div class="q-options">
-          <button onclick="answer(this, false)">Monticello</button>
-          <button onclick="answer(this, false)">The White House</button>
-          <button onclick="answer(this, true)">Mount Vernon</button>
-          <button onclick="answer(this, false)">Independence Hall</button>
-        </div>
-        <p class="q-feedback"></p>
+        <p class="q-text" id="q2-text"></p>
+        <div class="q-options" id="q2-options"></div>
+        <p class="q-feedback" id="q2-feedback"></p>
       </div>
       <div class="quiz-question" id="q3">
-        <p class="q-text">3. Which river did Washington cross on Christmas night 1776?</p>
-        <div class="q-options">
-          <button onclick="answer(this, false)">Mississippi River</button>
-          <button onclick="answer(this, true)">Delaware River</button>
-          <button onclick="answer(this, false)">Hudson River</button>
-          <button onclick="answer(this, false)">Potomac River</button>
-        </div>
-        <p class="q-feedback"></p>
+        <p class="q-text" id="q3-text"></p>
+        <div class="q-options" id="q3-options"></div>
+        <p class="q-feedback" id="q3-feedback"></p>
       </div>
       <div class="quiz-question" id="q4">
-        <p class="q-text">4. How many terms did Washington serve as President?</p>
-        <div class="q-options">
-          <button onclick="answer(this, false)">One</button>
-          <button onclick="answer(this, true)">Two</button>
-          <button onclick="answer(this, false)">Three</button>
-          <button onclick="answer(this, false)">Four</button>
-        </div>
-        <p class="q-feedback"></p>
+        <p class="q-text" id="q4-text"></p>
+        <div class="q-options" id="q4-options"></div>
+        <p class="q-feedback" id="q4-feedback"></p>
       </div>
       <div class="quiz-question" id="q5">
-        <p class="q-text">5. Which coin has George Washington's face on it?</p>
-        <div class="q-options">
-          <button onclick="answer(this, false)">Dime</button>
-          <button onclick="answer(this, false)">Nickel</button>
-          <button onclick="answer(this, true)">Quarter</button>
-          <button onclick="answer(this, false)">Half Dollar</button>
-        </div>
-        <p class="q-feedback"></p>
+        <p class="q-text" id="q5-text"></p>
+        <div class="q-options" id="q5-options"></div>
+        <p class="q-feedback" id="q5-feedback"></p>
       </div>
       <div id="quiz-result" class="quiz-result hidden">
+        <div id="score-stars"></div>
         <h3>You scored <span id="score"></span> out of 5!</h3>
         <p id="result-msg"></p>
-        <button onclick="restartQuiz()">Try Again!</button>
+        <button onclick="restartQuiz()">Try Again with New Questions!</button>
       </div>
     </div>
     <div class="quiz-progress">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
       <span id="progress-text">Question 1 of 5</span>
     </div>
   </section>
