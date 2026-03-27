@@ -137,7 +137,7 @@ nav a:hover {
 /* ===== HERO ===== */
 .hero {
   background: linear-gradient(rgba(26,58,92,0.85), rgba(13,34,54,0.85)),
-              url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg/400px-Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg') center/cover no-repeat;
+              url('https://commons.wikimedia.org/wiki/Special:FilePath/Washington_Crossing_the_Delaware_by_Emanuel_Leutze,_MMA-NYC,_1851.jpg?width=1200') center/cover no-repeat;
   min-height: 320px;
   display: flex;
   align-items: center;
