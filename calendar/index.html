@@ -24,6 +24,8 @@
       <span class="search-icon">&#128269;</span>
       <input type="search" id="searchInput" placeholder="Search activities&hellip;  ( / )" aria-label="Search activities" />
     </div>
+    <button class="sync-badge" id="syncBadge" title="Repository sync status"><span class="sync-dot">&#8943;</span>Checking&hellip;</button>
+    <button class="btn" id="btnPublish" title="Commit this calendar back to the repository" hidden>&#8593; Publish</button>
     <button class="btn btn-primary" id="btnNew" title="New activity (N)">+ Activity</button>
     <button class="btn" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="Undo">&#8630;</button>
     <button class="btn" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="Redo">&#8631;</button>
@@ -148,6 +150,42 @@
       <label class="check">
         <input type="checkbox" id="setHighlightToday" /> <span>Highlight today</span>
       </label>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Repository sync</h3>
+      <p class="muted small" style="margin-bottom:12px">
+        The calendar is stored as <code>data/calendar.json</code> in the repository, so every
+        device loads the same week. Status: <strong id="syncState">&mdash;</strong>
+      </p>
+      <div class="btn-row">
+        <button class="btn" id="btnSyncPull">&#8595; Load from repo</button>
+        <button class="btn" id="btnSyncPublish">&#8593; Publish to repo</button>
+      </div>
+
+      <div class="grid2">
+        <label class="field"><span>Owner</span><input type="text" id="syncOwner" placeholder="schitipi12" /></label>
+        <label class="field"><span>Repository</span><input type="text" id="syncRepo" placeholder="george-washington" /></label>
+      </div>
+      <div class="grid2">
+        <label class="field"><span>Branch</span><input type="text" id="syncBranch" placeholder="main" /></label>
+        <label class="field"><span>File path</span><input type="text" id="syncPath" placeholder="calendar/data/calendar.json" /></label>
+      </div>
+      <label class="field">
+        <span>GitHub token (optional &mdash; needed only to publish)</span>
+        <input type="password" id="syncToken" placeholder="github_pat_&hellip;" autocomplete="off" />
+      </label>
+      <p class="hintline">
+        Use a <strong>fine-grained</strong> token limited to this one repository with
+        <strong>Contents: read and write</strong>, and give it an expiry date. It is kept only in this
+        browser and is never included in exports or share links. Anyone using this browser can read it,
+        so avoid adding one on a shared or public computer &mdash; without a token everything still works,
+        you just publish by committing the file yourself.
+      </p>
+      <div class="btn-row">
+        <button class="btn" id="btnSyncSave">Save settings</button>
+        <button class="btn btn-danger" id="btnSyncForget">Forget token</button>
+      </div>
     </div>
 
     <div class="drawer-section">

@@ -141,6 +141,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .btn-sm { padding: 5px 10px; font-size: 13px; }
 .btn:disabled { opacity: .4; cursor: not-allowed; }
 
+/* Repository sync badge */
+
+.sync-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 13px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface-2);
+  font-size: 13px; font-weight: 600; color: var(--text-soft);
+  white-space: nowrap;
+}
+.sync-badge:hover { border-color: var(--border-strong); }
+.sync-badge .sync-dot { font-size: 11px; line-height: 1; }
+.sync-badge.is-synced { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
+.sync-badge.is-local { color: #b45309; background: rgba(245, 158, 11, .16); border-color: transparent; }
+.sync-badge.is-conflict { color: var(--danger); background: var(--danger-soft); border-color: var(--danger); }
+.sync-badge.is-busy .sync-dot { animation: spin 1s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+[data-theme="dark"] .sync-badge.is-local { color: #fbbf24; }
+
 .icon-btn {
   border: none; background: transparent; cursor: pointer;
   font-size: 22px; line-height: 1; padding: 4px 8px; border-radius: 8px;
