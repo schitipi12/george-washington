@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Family Weekly Calendar Manager - plan activities, classes and carpool duties for the whole family." />
+<title>Family Calendar Manager</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128197;</text></svg>" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">&#128197;</span>
+    <div>
+      <h1 id="calTitle">Family Weekly Calendar</h1>
+      <p class="brand-sub" id="calSub">Activities, classes &amp; carpool duties</p>
+    </div>
+  </div>
+
+  <div class="topbar-actions">
+    <div class="search-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="search" id="searchInput" placeholder="Search activities&hellip;  ( / )" aria-label="Search activities" />
+    </div>
+    <button class="btn btn-primary" id="btnNew" title="New activity (N)">+ Activity</button>
+    <button class="btn" id="btnUndo" title="Undo (Ctrl+Z)" aria-label="Undo">&#8630;</button>
+    <button class="btn" id="btnRedo" title="Redo (Ctrl+Y)" aria-label="Redo">&#8631;</button>
+    <button class="btn" id="btnTheme" title="Toggle dark / light theme" aria-label="Toggle theme">&#9681;</button>
+    <button class="btn" id="btnMenu" title="More options" aria-label="More options">&#9776;</button>
+  </div>
+</header>
+
+<nav class="toolbar">
+  <div class="viewswitch" role="tablist" aria-label="View">
+    <button class="vbtn is-active" data-view="week" role="tab">Week</button>
+    <button class="vbtn" data-view="agenda" role="tab">Agenda</button>
+    <button class="vbtn" data-view="person" role="tab">By Person</button>
+    <button class="vbtn" data-view="drivers" role="tab">Carpool</button>
+    <button class="vbtn" data-view="stats" role="tab">Insights</button>
+  </div>
+
+  <div class="filters">
+    <div class="chipset" id="personFilter" aria-label="Filter by person"></div>
+    <select id="categoryFilter" aria-label="Filter by category">
+      <option value="">All categories</option>
+    </select>
+    <button class="btn btn-ghost" id="btnClearFilters">Clear</button>
+  </div>
+
+  <div class="toolbar-right">
+    <button class="btn btn-ghost" id="btnPeople">&#128101; People</button>
+    <button class="btn btn-ghost" id="btnCategories">&#127991; Categories</button>
+    <button class="btn btn-ghost" id="btnPrint">&#128424; Print</button>
+  </div>
+</nav>
+
+<main id="app">
+  <!-- WEEK VIEW -->
+  <section id="view-week" class="view">
+    <div class="week-grid" id="weekGrid"></div>
+  </section>
+
+  <!-- AGENDA VIEW -->
+  <section id="view-agenda" class="view hidden">
+    <div class="agenda" id="agendaList"></div>
+  </section>
+
+  <!-- PERSON VIEW -->
+  <section id="view-person" class="view hidden">
+    <div class="person-board" id="personBoard"></div>
+  </section>
+
+  <!-- DRIVERS VIEW -->
+  <section id="view-drivers" class="view hidden">
+    <div class="section-head">
+      <h2>Carpool &amp; Driver Board</h2>
+      <button class="btn btn-primary" id="btnNewDriver">+ Driver duty</button>
+    </div>
+    <div class="driver-grid" id="driverGrid"></div>
+    <div class="legend-card">
+      <div class="section-head compact">
+        <h3>Code Key</h3>
+        <button class="btn btn-ghost btn-sm" id="btnAddKey">+ Add code</button>
+      </div>
+      <div class="legend-list" id="legendList"></div>
+    </div>
+  </section>
+
+  <!-- STATS VIEW -->
+  <section id="view-stats" class="view hidden">
+    <div class="stat-cards" id="statCards"></div>
+    <div class="stat-panels">
+      <div class="panel">
+        <h3>Activities per day</h3>
+        <div class="bars" id="barsDay"></div>
+      </div>
+      <div class="panel">
+        <h3>Activities per person</h3>
+        <div class="bars" id="barsPerson"></div>
+      </div>
+      <div class="panel">
+        <h3>Category mix</h3>
+        <div class="bars" id="barsCategory"></div>
+      </div>
+      <div class="panel">
+        <h3>Driver load</h3>
+        <div class="bars" id="barsDriver"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>Saved automatically in this browser &middot; <span id="saveStamp">&mdash;</span></span>
+  <span class="kbd-hint">Shortcuts: <kbd>N</kbd> new &middot; <kbd>/</kbd> search &middot; <kbd>1</kbd>&ndash;<kbd>5</kbd> views &middot; <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo</span>
+</footer>
+
+<!-- ============ SIDE MENU ============ -->
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <h2>Options</h2>
+      <button class="icon-btn" data-close-drawer aria-label="Close">&times;</button>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Calendar</h3>
+      <label class="field">
+        <span>Title</span>
+        <input type="text" id="setTitle" />
+      </label>
+      <label class="field">
+        <span>Subtitle</span>
+        <input type="text" id="setSub" />
+      </label>
+      <label class="field">
+        <span>Week starts on</span>
+        <select id="setWeekStart">
+          <option value="0">Sunday</option>
+          <option value="1">Monday</option>
+        </select>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="setShowTimes" /> <span>Show times on cards</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="setHighlightToday" /> <span>Highlight today</span>
+      </label>
+    </div>
+
+    <div class="drawer-section">
+      <h3>Data</h3>
+      <div class="btn-row">
+        <button class="btn" id="btnExportJson">&#11015; Export JSON</button>
+        <button class="btn" id="btnImportJson">&#11014; Import JSON</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btnExportCsv">&#11015; Export CSV</button>
+        <button class="btn" id="btnExportIcs">&#128197; Export .ics</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="btnShareLink">&#128279; Copy share link</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-danger" id="btnReset">&#9888; Reset to sample week</button>
+        <button class="btn btn-danger" id="btnClearAll">&#128465; Clear everything</button>
+      </div>
+      <input type="file" id="fileInput" accept="application/json,.json" hidden />
+    </div>
+
+    <div class="drawer-section">
+      <h3>About</h3>
+      <p class="muted small">
+        A single-page family scheduler. Everything is stored locally in your browser
+        (nothing is uploaded). Use <strong>Export JSON</strong> to back up or move your
+        calendar to another device, and <strong>Copy share link</strong> to send the whole
+        week to someone else.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL SHELL ============ -->
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h2 id="modalTitle">Title</h2>
+      <button class="icon-btn" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toasts" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
