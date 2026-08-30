@@ -204,6 +204,7 @@
     } catch (e) {
       toast("Could not save — browser storage is full or blocked.");
     }
+    sync.refreshBadge();
   }
 
   /** Snapshot current state so the change can be undone, then run fn. */
@@ -228,6 +229,384 @@
     undoStack.push(clone(state));
     state = redoStack.pop();
     save(); render(); toast("Redone");
+  }
+
+  /* ============================================================
+     STATIC-FILE BACKEND
+
+     The calendar lives in a JSON file committed next to the app
+     (data/calendar.json). Any device loads it over plain HTTP, so the
+     whole family sees the same week. Writing back goes through the
+     GitHub Contents API, which needs a fine-grained token with
+     "Contents: read and write" on this repository only. Without a
+     token the app is read-from-repo + edit-locally + export.
+     ============================================================ */
+
+  var BASELINE_KEY = "familyCalendar.baseline";
+  var SYNC_KEY = "familyCalendar.sync";
+
+  /** Key-sorted stringify so "did this change?" never trips on key order. */
+  function canonical(v) {
+    if (v === null || typeof v !== "object") return JSON.stringify(v);
+    if (Array.isArray(v)) return "[" + v.map(canonical).join(",") + "]";
+    return "{" + Object.keys(v).sort().filter(function (k) { return v[k] !== undefined; })
+      .map(function (k) { return JSON.stringify(k) + ":" + canonical(v[k]); }).join(",") + "}";
+  }
+  /** Ignore the bookkeeping field when comparing calendars. */
+  function calendarFingerprint(obj) {
+    var c = clone(obj);
+    delete c.updatedAt;
+    delete c.updatedBy;
+    return canonical(c);
+  }
+  function b64encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64decode(str) { return decodeURIComponent(escape(atob(str.replace(/\s/g, "")))); }
+
+  var sync = {
+    /** "unknown" | "offline" | "synced" | "local" | "conflict" | "busy" */
+    status: "unknown",
+    detail: "",
+    remoteSha: null,
+    busy: false,
+
+    /* ----- configuration ----- */
+
+    /** Guess owner/repo/path from the GitHub Pages URL we are served from. */
+    detect: function () {
+      var guess = { owner: "", repo: "", branch: "main", path: "data/calendar.json" };
+      var host = location.hostname.match(/^([^.]+)\.github\.io$/);
+      if (!host) return guess;
+      guess.owner = host[1];
+      var segs = location.pathname.split("/").filter(Boolean);
+      // Drop the trailing file name, if the URL names one.
+      if (segs.length && /\./.test(segs[segs.length - 1])) segs.pop();
+      var userSite = host[1] + ".github.io";
+      var dir;
+      if (segs.length && segs[0].toLowerCase() !== "calendar") {
+        guess.repo = segs[0];
+        dir = segs.slice(1);
+      } else {
+        guess.repo = userSite;
+        dir = segs;
+      }
+      guess.path = dir.concat("data/calendar.json").join("/");
+      return guess;
+    },
+
+    config: function () {
+      var stored = {};
+      try { stored = JSON.parse(localStorage.getItem(SYNC_KEY) || "{}"); } catch (e) {}
+      var d = this.detect();
+      return {
+        owner: stored.owner || d.owner,
+        repo: stored.repo || d.repo,
+        branch: stored.branch || d.branch,
+        path: stored.path || d.path,
+        token: stored.token || ""
+      };
+    },
+    saveConfig: function (cfg) {
+      try { localStorage.setItem(SYNC_KEY, JSON.stringify(cfg)); } catch (e) {}
+    },
+    hasToken: function () { return !!this.config().token; },
+
+    /* ----- baseline (last content known to match the repo) ----- */
+
+    baseline: function () {
+      try {
+        var raw = localStorage.getItem(BASELINE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    setBaseline: function (obj, sha) {
+      try { localStorage.setItem(BASELINE_KEY, JSON.stringify(obj)); } catch (e) {}
+      if (sha !== undefined) this.remoteSha = sha;
+    },
+    isDirty: function () {
+      var base = this.baseline();
+      if (!base) return false;
+      return calendarFingerprint(base) !== calendarFingerprint(state);
+    },
+
+    /* ----- reading the static file ----- */
+
+    dataUrl: function () {
+      // Relative to the page, so it works on Pages, a local server, and forks.
+      return "data/calendar.json?t=" + Date.now();
+    },
+
+    /** True when the page can actually reach a sibling data file. */
+    canFetch: function () {
+      return location.protocol === "http:" || location.protocol === "https:";
+    },
+
+    fetchRemote: function () {
+      if (!this.canFetch()) return Promise.reject(new Error("no HTTP origin"));
+      return fetch(this.dataUrl(), { cache: "no-store" }).then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      }).then(function (json) {
+        var n = normalize(json);
+        if (!n || !n.people) throw new Error("bad file");
+        return n;
+      });
+    },
+
+    /**
+     * Boot-time reconcile.
+     *  - first ever visit ....... adopt the repo file
+     *  - no local edits ......... adopt the repo file (this is the sync)
+     *  - local edits, repo same . "local changes, not published"
+     *  - local edits, repo moved  "conflict", the user picks
+     */
+    reconcile: function (hasLocalWork) {
+      var self = this;
+      return this.fetchRemote().then(function (remote) {
+        var base = self.baseline();
+        var dirty = self.isDirty();
+
+        if (!base) {
+          // No baseline yet. Only real saved work can outrank the repo file —
+          // the built-in sample week is just a placeholder.
+          if (!hasLocalWork || calendarFingerprint(state) === calendarFingerprint(remote)) {
+            state = remote;
+            self.setBaseline(remote);
+            self.set("synced", "loaded from the repository");
+            save0();
+            render();
+            return;
+          }
+          // Local work predates the backend — keep it, treat as unpublished.
+          self.setBaseline(remote);
+          self.set("local", "your edits are not in the repository yet");
+          render();
+          return;
+        }
+
+        var remoteMoved = calendarFingerprint(remote) !== calendarFingerprint(base);
+
+        if (!dirty) {
+          if (remoteMoved) {
+            state = remote;
+            self.setBaseline(remote);
+            save0();
+            render();
+            self.set("synced", "updated from the repository");
+            toast("Calendar updated from the repository");
+          } else {
+            self.set("synced", "up to date with the repository");
+            render();
+          }
+          return;
+        }
+
+        self.setBaseline(base);
+        if (remoteMoved) {
+          self.set("conflict", "the repository changed and you have local edits");
+          render();
+        } else {
+          self.set("local", "you have changes that are not published");
+          render();
+        }
+      }).catch(function (err) {
+        self.set("offline", location.protocol === "file:"
+          ? "opened as a local file — repository sync is off"
+          : "could not read data/calendar.json (" + err.message + ")");
+        render();
+      });
+    },
+
+    /** Discard local edits and take whatever the repo currently holds. */
+    pull: function () {
+      var self = this;
+      this.set("busy", "reading the repository…");
+      return this.fetchRemote().then(function (remote) {
+        commit(function () { state = remote; }, "Loaded the repository version");
+        self.setBaseline(remote);
+        self.set("synced", "up to date with the repository");
+        render();
+      }).catch(function (err) {
+        self.set("offline", "could not read the file (" + err.message + ")");
+        toast("Could not read the repository file.");
+        render();
+      });
+    },
+
+    /* ----- writing back through the GitHub Contents API ----- */
+
+    api: function (cfg, method, body) {
+      var url = "https://api.github.com/repos/" + encodeURIComponent(cfg.owner) + "/" +
+        encodeURIComponent(cfg.repo) + "/contents/" +
+        cfg.path.split("/").map(encodeURIComponent).join("/");
+      var opts = {
+        method: method,
+        headers: {
+          "Accept": "application/vnd.github+json",
+          "Authorization": "Bearer " + cfg.token,
+          "X-GitHub-Api-Version": "2022-11-28"
+        }
+      };
+      if (body) {
+        opts.headers["Content-Type"] = "application/json";
+        opts.body = JSON.stringify(body);
+      } else {
+        url += "?ref=" + encodeURIComponent(cfg.branch);
+      }
+      return fetch(url, opts).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (json) {
+          if (!res.ok) {
+            var msg = json.message || ("HTTP " + res.status);
+            if (res.status === 401) msg = "the token was rejected (401) — check it has not expired";
+            if (res.status === 403) msg = "the token lacks Contents: read and write on this repository (403)";
+            if (res.status === 404) msg = "repository or file path not found (404) — check the sync settings";
+            var e = new Error(msg); e.status = res.status; throw e;
+          }
+          return json;
+        });
+      });
+    },
+
+    /** Commit the current calendar back to the repo. */
+    publish: function (force) {
+      var self = this;
+      var cfg = this.config();
+      if (!cfg.token) return this.offerManualPublish();
+      if (!cfg.owner || !cfg.repo || !cfg.path) {
+        toast("Set the repository owner, name and path in Options → Repository sync.");
+        return openDrawer();
+      }
+      if (this.busy) return;
+      this.busy = true;
+      this.set("busy", "publishing to the repository…");
+
+      var payload = clone(state);
+      delete payload.updatedAt;
+      payload.updatedAt = new Date().toISOString();
+      var text = JSON.stringify(payload, null, 2) + "\n";
+
+      return this.api(cfg, "GET").then(function (file) {
+        // Someone else may have published since we last looked.
+        if (!force) {
+          var base = self.baseline();
+          var current;
+          try { current = JSON.parse(b64decode(file.content)); } catch (e) { current = null; }
+          if (base && current && calendarFingerprint(current) !== calendarFingerprint(base)) {
+            var e = new Error("conflict"); e.conflict = true; throw e;
+          }
+        }
+        return self.api(cfg, "PUT", {
+          message: "Update family calendar",
+          content: b64encode(text),
+          sha: file.sha,
+          branch: cfg.branch
+        });
+      }).then(function (res) {
+        self.busy = false;
+        self.setBaseline(payload, res.content && res.content.sha);
+        self.set("synced", "published just now");
+        render();
+        toast("Published to the repository — other devices will pick it up.");
+      }).catch(function (err) {
+        self.busy = false;
+        if (err.conflict) {
+          self.set("conflict", "someone else published a newer version");
+          render();
+          return self.resolveConflict();
+        }
+        self.set("local", "publish failed: " + err.message);
+        render();
+        toast("Publish failed — " + err.message);
+      });
+    },
+
+    resolveConflict: function () {
+      var self = this;
+      openModal({
+        title: "The repository has a newer calendar",
+        body: '<p class="muted small" style="margin-bottom:14px">Someone published changes from another device ' +
+          "since you last synced, and you also have unpublished edits here. Pick which version to keep — " +
+          "there is no automatic merge.</p>" +
+          '<p class="muted small">“Keep the repository version” discards your local edits. ' +
+          "Export a JSON backup first if you are not sure.</p>",
+        footer: '<button class="btn spacer" id="cfExport">Export mine first</button>' +
+          '<button class="btn" id="cfTakeRemote">Keep the repository version</button>' +
+          '<button class="btn btn-primary" id="cfTakeMine">Publish mine anyway</button>',
+        onOpen: function () {
+          $("#cfExport").onclick = exportJson;
+          $("#cfTakeRemote").onclick = function () { closeModal(); self.pull(); };
+          $("#cfTakeMine").onclick = function () { closeModal(); self.publish(true); };
+        }
+      });
+    },
+
+    /** No token configured: hand over the file and how to commit it. */
+    offerManualPublish: function () {
+      var cfg = this.config();
+      openModal({
+        title: "Publish without a token",
+        body: '<p class="muted small" style="margin-bottom:14px">No GitHub token is configured, so the app cannot ' +
+          "write to the repository itself. You can still publish by committing the file by hand:</p>" +
+          "<ol class=\"small\" style=\"margin:0 0 14px 18px;padding:0;line-height:1.9\">" +
+          "<li>Download the file below.</li>" +
+          "<li>Replace <code>" + esc(cfg.path || "calendar/data/calendar.json") + "</code> in the repository with it.</li>" +
+          "<li>Commit — GitHub Pages redeploys and every device picks it up.</li></ol>" +
+          '<p class="muted small">To let the app do this for you, add a token in Options → Repository sync.</p>',
+        footer: '<span class="spacer"></span><button class="btn" data-close-modal>Close</button>' +
+          '<button class="btn btn-primary" id="mpDownload">Download calendar.json</button>',
+        onOpen: function () {
+          $("#mpDownload").onclick = function () {
+            var payload = clone(state);
+            payload.updatedAt = new Date().toISOString();
+            download("calendar.json", JSON.stringify(payload, null, 2) + "\n", "application/json");
+            closeModal();
+          };
+        }
+      });
+    },
+
+    /* ----- status badge ----- */
+
+    set: function (status, detail) {
+      this.status = status;
+      this.detail = detail || "";
+      this.paintBadge();
+    },
+    /** Re-evaluate after a local edit, without touching the network. */
+    refreshBadge: function () {
+      if (this.status === "offline" || this.status === "busy" || this.status === "unknown") return this.paintBadge();
+      if (this.status === "conflict") return this.paintBadge();
+      this.status = this.isDirty() ? "local" : "synced";
+      this.detail = this.status === "local"
+        ? "you have changes that are not published"
+        : "up to date with the repository";
+      this.paintBadge();
+    },
+    paintBadge: function () {
+      var el = $("#syncBadge");
+      if (!el) return;
+      var map = {
+        unknown: { icon: "⋯", text: "Checking…" },
+        busy: { icon: "⟳", text: "Working…" },
+        offline: { icon: "○", text: "Local only" },
+        synced: { icon: "●", text: "Synced" },
+        local: { icon: "▲", text: "Unpublished" },
+        conflict: { icon: "!", text: "Conflict" }
+      };
+      var m = map[this.status] || map.unknown;
+      el.className = "sync-badge is-" + this.status;
+      el.innerHTML = '<span class="sync-dot">' + m.icon + "</span>" + m.text;
+      el.title = this.detail || m.text;
+      var pub = $("#btnPublish");
+      if (pub) {
+        pub.hidden = this.status === "offline" || this.status === "unknown";
+        pub.disabled = this.busy;
+      }
+    }
+  };
+
+  /** save() without the badge refresh, for use inside sync itself. */
+  function save0() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
   /* ---------- lookups ---------- */
@@ -1101,6 +1480,33 @@
     $("#setShowTimes").onchange = function () { state.settings.showTimes = this.checked; save(); render(); };
     $("#setHighlightToday").onchange = function () { state.settings.highlightToday = this.checked; save(); render(); };
 
+    // repository sync
+    $("#btnPublish").onclick = function () { sync.publish(false); };
+    $("#syncBadge").onclick = function () {
+      if (sync.status === "conflict") return sync.resolveConflict();
+      openDrawer();
+    };
+    $("#btnSyncSave").onclick = function () {
+      sync.saveConfig({
+        owner: $("#syncOwner").value.trim(),
+        repo: $("#syncRepo").value.trim(),
+        branch: $("#syncBranch").value.trim() || "main",
+        path: $("#syncPath").value.trim(),
+        token: $("#syncToken").value.trim()
+      });
+      toast("Repository settings saved");
+      sync.paintBadge();
+    };
+    $("#btnSyncForget").onclick = function () {
+      var cfg = sync.config();
+      cfg.token = "";
+      sync.saveConfig(cfg);
+      $("#syncToken").value = "";
+      toast("Token removed from this browser");
+    };
+    $("#btnSyncPull").onclick = function () { $("#drawer").hidden = true; sync.pull(); };
+    $("#btnSyncPublish").onclick = function () { $("#drawer").hidden = true; sync.publish(false); };
+
     $("#btnExportJson").onclick = exportJson;
     $("#btnExportCsv").onclick = exportCsv;
     $("#btnExportIcs").onclick = exportIcs;
@@ -1156,6 +1562,14 @@
     $("#setWeekStart").value = String(state.settings.weekStart);
     $("#setShowTimes").checked = !!state.settings.showTimes;
     $("#setHighlightToday").checked = !!state.settings.highlightToday;
+
+    var cfg = sync.config();
+    $("#syncOwner").value = cfg.owner;
+    $("#syncRepo").value = cfg.repo;
+    $("#syncBranch").value = cfg.branch;
+    $("#syncPath").value = cfg.path;
+    $("#syncToken").value = cfg.token;
+    $("#syncState").textContent = sync.detail || "—";
   }
 
   /* ============================================================
@@ -1166,22 +1580,24 @@
     var shared = readShareLink();
     var saved = load();
 
+    // Start from whatever is on hand so the page paints immediately, then
+    // reconcile with the repository file in the background.
+    state = saved || seed();
+    wire();
+    sync.set("unknown", "checking the repository…");
+    render();
+
     if (shared) {
-      state = saved || seed();
-      wire();
-      render();
       history.replaceState(null, "", location.pathname);
       if (confirm("This link contains a shared calendar. Open it? Your current calendar will be replaced (you can undo).")) {
         commit(function () { state = shared; }, "Shared calendar loaded");
       }
+      sync.refreshBadge();
       return;
     }
 
-    state = saved || seed();
-    if (!saved) save();
-    wire();
-    render();
-    $("#saveStamp").textContent = saved ? "loaded from this browser" : "sample week loaded";
+    $("#saveStamp").textContent = saved ? "loaded from this browser" : "loading…";
+    sync.reconcile(!!saved);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

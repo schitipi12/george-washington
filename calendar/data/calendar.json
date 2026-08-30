@@ -1,0 +1,442 @@
+{
+  "version": 1,
+  "settings": {
+    "title": "Family Weekly Calendar",
+    "subtitle": "Activities, classes & carpool duties",
+    "weekStart": 0,
+    "theme": "light",
+    "showTimes": true,
+    "highlightToday": true
+  },
+  "people": [
+    {
+      "id": "p_jashu",
+      "name": "Jashu",
+      "short": "J",
+      "color": "#7c3aed"
+    },
+    {
+      "id": "p_anshu",
+      "name": "Anshu",
+      "short": "A",
+      "color": "#0891b2"
+    }
+  ],
+  "categories": [
+    {
+      "id": "c_dance",
+      "name": "Dance",
+      "color": "#e11d6b"
+    },
+    {
+      "id": "c_acad",
+      "name": "Academics",
+      "color": "#2563eb"
+    },
+    {
+      "id": "c_sports",
+      "name": "Sports",
+      "color": "#059669"
+    },
+    {
+      "id": "c_hw",
+      "name": "Homework",
+      "color": "#d97706"
+    },
+    {
+      "id": "c_free",
+      "name": "Free Day",
+      "color": "#64748b"
+    },
+    {
+      "id": "c_music",
+      "name": "Bollywood",
+      "color": "#db2777"
+    },
+    {
+      "id": "c_swim",
+      "name": "Swimming",
+      "color": "#0891b2"
+    }
+  ],
+  "activities": [
+    {
+      "id": "a_9llznvn",
+      "day": 0,
+      "personId": "p_jashu",
+      "title": "Free Day / No class",
+      "categoryId": "c_free",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_rup9urf",
+      "day": 0,
+      "personId": "p_jashu",
+      "title": "Dance Practice - K",
+      "categoryId": "c_dance",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_3ve72rn",
+      "day": 0,
+      "personId": "p_jashu",
+      "title": "HW Completion",
+      "categoryId": "c_hw",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_42qh8l6",
+      "day": 0,
+      "personId": "p_anshu",
+      "title": "Free Day / No class",
+      "categoryId": "c_free",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_s4mvyku",
+      "day": 1,
+      "personId": "p_jashu",
+      "title": "Agenda check",
+      "categoryId": "c_hw",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_vb1nn5o",
+      "day": 1,
+      "personId": "p_jashu",
+      "title": "English - Curie",
+      "categoryId": "c_acad",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_hoqp0z2",
+      "day": 1,
+      "personId": "p_anshu",
+      "title": "BB / Curie",
+      "categoryId": "c_sports",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_1pozptf",
+      "day": 2,
+      "personId": "p_jashu",
+      "title": "Dance Practice - B",
+      "categoryId": "c_dance",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_ruzq8v7",
+      "day": 2,
+      "personId": "p_jashu",
+      "title": "Algebra 1 - Curie",
+      "categoryId": "c_acad",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_tiuk0n8",
+      "day": 2,
+      "personId": "p_anshu",
+      "title": "Free Day / No class",
+      "categoryId": "c_free",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_39pf1z1",
+      "day": 3,
+      "personId": "p_jashu",
+      "title": "Free Day / No class",
+      "categoryId": "c_free",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_jtmrlet",
+      "day": 3,
+      "personId": "p_jashu",
+      "title": "HW Completion",
+      "categoryId": "c_hw",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_e0ywbl5",
+      "day": 3,
+      "personId": "p_jashu",
+      "title": "Dance Practice - B",
+      "categoryId": "c_dance",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_z4hhjvv",
+      "day": 3,
+      "personId": "p_anshu",
+      "title": "Basket Ball",
+      "categoryId": "c_sports",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_hoam2kd",
+      "day": 4,
+      "personId": "p_jashu",
+      "title": "Dance Practice - K",
+      "categoryId": "c_dance",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_7mceyg8",
+      "day": 4,
+      "personId": "p_jashu",
+      "title": "Bollywood - TheBollyFactor",
+      "categoryId": "c_music",
+      "start": "",
+      "end": "",
+      "location": "TheBollyFactor",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_c53exqp",
+      "day": 4,
+      "personId": "p_anshu",
+      "title": "Bollywood - StudioDoom",
+      "categoryId": "c_music",
+      "start": "",
+      "end": "",
+      "location": "StudioDoom",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_jfbr7i7",
+      "day": 5,
+      "personId": "p_jashu",
+      "title": "Kuchipudi - Anu Aunty",
+      "categoryId": "c_dance",
+      "start": "",
+      "end": "",
+      "location": "Anu Aunty",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_nuhmrr7",
+      "day": 5,
+      "personId": "p_jashu",
+      "title": "Agenda Revision",
+      "categoryId": "c_hw",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_4s1vama",
+      "day": 5,
+      "personId": "p_anshu",
+      "title": "Curie",
+      "categoryId": "c_acad",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_k5ufe6o",
+      "day": 6,
+      "personId": "p_jashu",
+      "title": "Swimming",
+      "categoryId": "c_swim",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_hdluu12",
+      "day": 6,
+      "personId": "p_jashu",
+      "title": "Complete HW",
+      "categoryId": "c_hw",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    },
+    {
+      "id": "a_92n3eh7",
+      "day": 6,
+      "personId": "p_anshu",
+      "title": "Swimming",
+      "categoryId": "c_swim",
+      "start": "",
+      "end": "",
+      "location": "",
+      "notes": "",
+      "done": false
+    }
+  ],
+  "drivers": [
+    {
+      "id": "d_o01gpfs",
+      "day": 0,
+      "driver": "No one",
+      "codes": "",
+      "time": "",
+      "notes": "Free day"
+    },
+    {
+      "id": "d_3mup9fd",
+      "day": 1,
+      "driver": "Mom",
+      "codes": "JD/JP/DD",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_ce9vwzb",
+      "day": 1,
+      "driver": "Dad",
+      "codes": "DP",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_lhe2gg8",
+      "day": 2,
+      "driver": "Sahi",
+      "codes": "JD/JP",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_mzhqg3o",
+      "day": 3,
+      "driver": "Sahi",
+      "codes": "DD/DP",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_1ec3f05",
+      "day": 4,
+      "driver": "Dad",
+      "codes": "JD/JP",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_3bmqtes",
+      "day": 5,
+      "driver": "Mom",
+      "codes": "JD",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_5f104ec",
+      "day": 5,
+      "driver": "Sahi",
+      "codes": "JP",
+      "time": "",
+      "notes": ""
+    },
+    {
+      "id": "d_r15z3c4",
+      "day": 6,
+      "driver": "Dad",
+      "codes": "JDD/JDP",
+      "time": "",
+      "notes": ""
+    }
+  ],
+  "legend": [
+    {
+      "id": "k_em6982k",
+      "code": "J",
+      "meaning": "Jashu"
+    },
+    {
+      "id": "k_iz8g4np",
+      "code": "1stD",
+      "meaning": "Anshu"
+    },
+    {
+      "id": "k_65tclbd",
+      "code": "2ndD",
+      "meaning": "Drop Off"
+    },
+    {
+      "id": "k_u73i4yb",
+      "code": "P",
+      "meaning": "Pick Up"
+    },
+    {
+      "id": "k_fbloemk",
+      "code": "D",
+      "meaning": "Drop"
+    }
+  ],
+  "updatedAt": "2026-08-30T01:03:00.445Z"
+}
